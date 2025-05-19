@@ -164,6 +164,12 @@ export async function listContents(
     if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
     const dirpath = nodePath.resolve(scopePath, target);
     if(!dirpath.startsWith(scopePath)) throw new except.UnknownEndpoint();
+    try {
+        await nodeFile.access(dirpath);
+    }
+    catch {
+        throw new except.PathDoesNotExist();
+    }
     const stat = await nodeFile.stat(dirpath);
     if(!stat.isDirectory()) throw new except.PathNotDirectory();
     const list = await nodeFile.readdir(dirpath);
@@ -184,6 +190,12 @@ export async function testContent(
     if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
     const contentPath = nodePath.resolve(scopePath, target);
     if(!contentPath.startsWith(scopePath)) throw new except.UnknownEndpoint();
+    try {
+        await nodeFile.access(contentPath);
+    }
+    catch {
+        return 0;
+    }
     const stat = await nodeFile.stat(contentPath);
     if(stat.isDirectory()) return 2;
     else if(stat.isFile()) return 1;
@@ -204,6 +216,12 @@ export async function fetchContent(
     if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
     const filepath = nodePath.resolve(scopePath, target);
     if(!filepath.startsWith(scopePath)) throw new except.UnknownEndpoint();
+    try {
+        await nodeFile.access(filepath);
+    }
+    catch {
+        throw new except.PathDoesNotExist();
+    }
     const stat = await nodeFile.stat(filepath);
     if(!stat.isFile()) throw new except.PathNotFile();
     const file = Bun.file(filepath);
@@ -225,8 +243,16 @@ export async function createContent(
     const contentPath = nodePath.resolve(scopePath, target);
     if(!contentPath.startsWith(scopePath)) throw new except.UnknownEndpoint();
     if(contentPath === scopePath) throw new except.PathIsScope();
-    const stat = await nodeFile.stat(contentPath);
-    if(stat.isDirectory() || stat.isFile()) throw new except.PathAlreadyExists();
+    let exists: boolean;
+    try {
+        await nodeFile.access(contentPath);
+        const stat = await nodeFile.stat(scopePath);
+        exists = stat.isDirectory() || stat.isFile();
+    }
+    catch {
+        exists = false;
+    }
+    if(exists) throw new except.PathAlreadyExists();
     if(content === null) nodeFile.mkdir(contentPath);
     else Bun.write(contentPath, content);
 }
@@ -245,6 +271,12 @@ export async function deleteContent(
     const contentPath = nodePath.resolve(scopePath, target);
     if(!contentPath.startsWith(scopePath)) throw new except.UnknownEndpoint();
     if(contentPath === scopePath) throw new except.PathIsScope();
+    try {
+        await nodeFile.access(contentPath);
+    }
+    catch {
+        throw new except.PathDoesNotExist();
+    }
     const stat = await nodeFile.stat(contentPath);
     if(!stat.isDirectory() && !stat.isFile()) throw new except.PathDoesNotExist();
     nodeFile.rm(contentPath, {
@@ -284,6 +316,12 @@ export async function testScope(scope: string, value: string): Promise<0 | 1> {
     const contentsPath = nodePath.resolve(project.root, "./contents/");
     const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
     if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
+    try {
+        await nodeFile.access(scopePath);
+    }
+    catch {
+        return 0;
+    }
     const stat = await nodeFile.stat(scopePath);
     return stat.isDirectory() ? 1 : 0;
 }
@@ -295,8 +333,16 @@ export async function createScope(scope: string, value: string): Promise<void> {
     const contentsPath = nodePath.resolve(project.root, "./contents/");
     const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
     if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
-    const stat = await nodeFile.stat(scopePath);
-    if(stat.isDirectory()) throw new except.PathAlreadyExists();
+    let exists: boolean;
+    try {
+        await nodeFile.access(scopePath);
+        const stat = await nodeFile.stat(scopePath);
+        exists = stat.isDirectory();
+    }
+    catch {
+        exists = false;
+    }
+    if(exists) throw new except.PathAlreadyExists();
     await nodeFile.mkdir(scopePath);
 }
 export async function deleteScope(scope: string, value: string): Promise<void> {
@@ -307,6 +353,12 @@ export async function deleteScope(scope: string, value: string): Promise<void> {
     const contentsPath = nodePath.resolve(project.root, "./contents/");
     const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
     if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
+    try {
+        await nodeFile.access(scopePath);
+    }
+    catch {
+        throw new except.PathDoesNotExist();
+    }
     const stat = await nodeFile.stat(scopePath);
     if(!stat.isDirectory()) throw new except.PathDoesNotExist();
     await nodeFile.rm(scopePath, {
