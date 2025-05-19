@@ -253,7 +253,9 @@ export async function createContent(
         exists = false;
     }
     if(exists) throw new except.PathAlreadyExists();
-    if(content === null) nodeFile.mkdir(contentPath);
+    if(content === null) nodeFile.mkdir(contentPath, {
+        recursive: true
+    });
     else Bun.write(contentPath, content);
 }
 export async function deleteContent(
@@ -338,12 +340,15 @@ export async function createScope(scope: string, value: string): Promise<void> {
         await nodeFile.access(scopePath);
         const stat = await nodeFile.stat(scopePath);
         exists = stat.isDirectory();
+
     }
     catch {
         exists = false;
     }
     if(exists) throw new except.PathAlreadyExists();
-    await nodeFile.mkdir(scopePath);
+    await nodeFile.mkdir(scopePath, {
+        recursive: true
+    });
 }
 export async function deleteScope(scope: string, value: string): Promise<void> {
     // Validates token
