@@ -216,6 +216,7 @@ export async function createContent(
     const scopePath = nodePath.resolve(project.root, `./contents/${scope}/`);
     const contentPath = nodePath.resolve(scopePath, target);
     if(!contentPath.startsWith(scopePath)) throw new except.UnknownEndpoint();
+    if(contentPath === scopePath) throw new except.PathIsScope();
     const stat = await nodeFile.stat(contentPath);
     if(stat.isDirectory() || stat.isFile()) throw new except.PathAlreadyExists();
     if(content === null) nodeFile.mkdir(contentPath);
@@ -233,6 +234,7 @@ export async function deleteContent(
     const scopePath = nodePath.resolve(project.root, `./contents/${scope}/`);
     const contentPath = nodePath.resolve(scopePath, target);
     if(!contentPath.startsWith(scopePath)) throw new except.UnknownEndpoint();
+    if(contentPath === scopePath) throw new except.PathIsScope();
     const stat = await nodeFile.stat(contentPath);
     if(!stat.isDirectory() && !stat.isFile()) throw new except.PathDoesNotExist();
     nodeFile.rm(contentPath, {
@@ -243,7 +245,26 @@ export async function deleteContent(
 
 // Defines scope handler
 export async function listScopes(values: string[]): Promise<string[]> {
-
+    // Lists scopes
+    const contentsPath = nodePath.resolve(project.root, "./contents/");
+    const scopes = await nodeFile.readdir(contentsPath);
+    const cache: Set<string> = new Set(fetchToken("").scopes);
+    for(let i = 0; i < values.length; i++) {
+        const value = values[i]!;
+        if(value === project.admin) return scopes;
+        try {
+            const token = fetchToken(value);
+            for(let j = 0; j < token.scopes.length; j++) {
+                const scope = token.scopes[j]!;
+                cache.add(scope);
+            }
+        }
+        catch {
+            continue;
+        }
+    }
+    const list = Array.from(cache).filter((scope) => scopes.includes(scope));
+    return list;
 }
 export async function createScope(scope: string, value: string): Promise<void> {
 

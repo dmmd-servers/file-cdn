@@ -32,6 +32,12 @@ export class PathDoesNotExist extends Exception {
     readonly message = "The path specified does not exist.";
     readonly status = 400;
 }
+export class PathIsScope extends Exception {
+    // Defines fields
+    readonly code = "PATH_IS_SCOPE";
+    readonly message = "The path specified is a scope.";
+    readonly status = 400;
+}
 export class PathNotDirectory extends Exception {
     // Defines fields
     readonly code = "PATH_NOT_DIRECTORY";
