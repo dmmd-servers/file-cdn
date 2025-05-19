@@ -159,7 +159,9 @@ export async function listContents(
     if(!token.scopes.includes(scope)) throw new except.UnauthorizedToken();
     
     // Lists directory
-    const scopePath = nodePath.resolve(project.root, `./contents/${scope}/`);
+    const contentsPath = nodePath.resolve(project.root, "./contents/");
+    const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
+    if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
     const dirpath = nodePath.resolve(scopePath, target);
     if(!dirpath.startsWith(scopePath)) throw new except.UnknownEndpoint();
     const stat = await nodeFile.stat(dirpath);
@@ -177,7 +179,9 @@ export async function testContent(
     if(!token.scopes.includes(scope)) throw new except.UnauthorizedToken();
     
     // Tests content
-    const scopePath = nodePath.resolve(project.root, `./contents/${scope}/`);
+    const contentsPath = nodePath.resolve(project.root, "./contents/");
+    const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
+    if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
     const contentPath = nodePath.resolve(scopePath, target);
     if(!contentPath.startsWith(scopePath)) throw new except.UnknownEndpoint();
     const stat = await nodeFile.stat(contentPath);
@@ -195,7 +199,9 @@ export async function fetchContent(
     if(!token.scopes.includes(scope)) throw new except.UnauthorizedToken();
     
     // Fetches content
-    const scopePath = nodePath.resolve(project.root, `./contents/${scope}/`);
+    const contentsPath = nodePath.resolve(project.root, "./contents/");
+    const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
+    if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
     const filepath = nodePath.resolve(scopePath, target);
     if(!filepath.startsWith(scopePath)) throw new except.UnknownEndpoint();
     const stat = await nodeFile.stat(filepath);
@@ -213,7 +219,9 @@ export async function createContent(
     if(value !== project.admin) throw new except.UnauthorizedToken();
     
     // Fetches content
-    const scopePath = nodePath.resolve(project.root, `./contents/${scope}/`);
+    const contentsPath = nodePath.resolve(project.root, "./contents/");
+    const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
+    if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
     const contentPath = nodePath.resolve(scopePath, target);
     if(!contentPath.startsWith(scopePath)) throw new except.UnknownEndpoint();
     if(contentPath === scopePath) throw new except.PathIsScope();
@@ -231,7 +239,9 @@ export async function deleteContent(
     if(value !== project.admin) throw new except.UnauthorizedToken();
     
     // Fetches content
-    const scopePath = nodePath.resolve(project.root, `./contents/${scope}/`);
+    const contentsPath = nodePath.resolve(project.root, "./contents/");
+    const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
+    if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
     const contentPath = nodePath.resolve(scopePath, target);
     if(!contentPath.startsWith(scopePath)) throw new except.UnknownEndpoint();
     if(contentPath === scopePath) throw new except.PathIsScope();
@@ -267,10 +277,31 @@ export async function listScopes(values: string[]): Promise<string[]> {
     return list;
 }
 export async function createScope(scope: string, value: string): Promise<void> {
+    // Validates token
+    if(value !== project.admin) throw new except.UnauthorizedToken();
 
+    // Creates scope
+    const contentsPath = nodePath.resolve(project.root, "./contents/");
+    const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
+    if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
+    const stat = await nodeFile.stat(scopePath);
+    if(stat.isDirectory()) throw new except.PathAlreadyExists();
+    await nodeFile.mkdir(scopePath);
 }
 export async function deleteScope(scope: string, value: string): Promise<void> {
+    // Validates token
+    if(value !== project.admin) throw new except.UnauthorizedToken();
 
+    // Creates scope
+    const contentsPath = nodePath.resolve(project.root, "./contents/");
+    const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
+    if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
+    const stat = await nodeFile.stat(scopePath);
+    if(!stat.isDirectory()) throw new except.PathDoesNotExist();
+    await nodeFile.rm(scopePath, {
+        force: true,
+        recursive: true
+    });
 }
 
 // Initializes database
