@@ -11,5 +11,8 @@
         "typescript": "^5"
     },
     "private": true,
+    "scripts": {
+        "cli": "bun core/cli.ts"
+    },
     "type": "module"
 }

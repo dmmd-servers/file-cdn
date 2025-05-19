@@ -59,7 +59,7 @@ export function generateToken(scopes: string[], life: number): Token {
         scopes: Array.from(new Set(scopes)),
         creation: Date.now(),
         expiration: Date.now() + life,
-        value: nodeCrypto.randomBytes(64).toBase64()
+        value: nodeCrypto.randomBytes(32).toBase64()
     };
     const schema = toTokenSchema(token);
     database.run(`
@@ -155,8 +155,12 @@ export async function listContents(
     target: string
 ): Promise<string[]> {
     // Validates token
-    const token = fetchToken(value);
-    if(!token.scopes.includes(scope)) throw new except.UnauthorizedToken();
+    if(value !== project.admin) {
+        const universal = fetchToken("");
+        const token = fetchToken(value);
+        const scopes = new Set([ ...universal.scopes, ...token.scopes ]);
+        if(!scopes.has(scope)) throw new except.UnauthorizedToken();
+    }
     
     // Lists directory
     const contentsPath = nodePath.resolve(project.root, "./contents/");
@@ -181,8 +185,12 @@ export async function testContent(
     target: string
 ): Promise<0 | 1 | 2> {
     // Validates token
-    const token = fetchToken(value);
-    if(!token.scopes.includes(scope)) throw new except.UnauthorizedToken();
+    if(value !== project.admin) {
+        const universal = fetchToken("");
+        const token = fetchToken(value);
+        const scopes = new Set([ ...universal.scopes, ...token.scopes ]);
+        if(!scopes.has(scope)) throw new except.UnauthorizedToken();
+    }
     
     // Tests content
     const contentsPath = nodePath.resolve(project.root, "./contents/");
@@ -207,8 +215,12 @@ export async function fetchContent(
     target: string
 ): Promise<ArrayBuffer> {
     // Validates token
-    const token = fetchToken(value);
-    if(!token.scopes.includes(scope)) throw new except.UnauthorizedToken();
+    if(value !== project.admin) {
+        const universal = fetchToken("");
+        const token = fetchToken(value);
+        const scopes = new Set([ ...universal.scopes, ...token.scopes ]);
+        if(!scopes.has(scope)) throw new except.UnauthorizedToken();
+    }
     
     // Fetches content
     const contentsPath = nodePath.resolve(project.root, "./contents/");
@@ -231,7 +243,8 @@ export async function createContent(
     scope: string,
     value: string,
     target: string,
-    content: ArrayBuffer | null
+    content: ArrayBuffer | null,
+    ensure: boolean = false
 ): Promise<void> {
     // Validates token
     if(value !== project.admin) throw new except.UnauthorizedToken();
@@ -252,7 +265,10 @@ export async function createContent(
     catch {
         exists = false;
     }
-    if(exists) throw new except.PathAlreadyExists();
+    if(exists) {
+        if(ensure) return;
+        throw new except.PathAlreadyExists();
+    }
     if(content === null) nodeFile.mkdir(contentPath, {
         recursive: true
     });
@@ -312,7 +328,12 @@ export async function listScopes(values: string[]): Promise<string[]> {
 }
 export async function testScope(scope: string, value: string): Promise<0 | 1> {
     // Validates token
-    if(value !== project.admin) throw new except.UnauthorizedToken();
+    if(value !== project.admin) {
+        const universal = fetchToken("");
+        const token = fetchToken(value);
+        const scopes = new Set([ ...universal.scopes, ...token.scopes ]);
+        if(!scopes.has(scope)) throw new except.UnauthorizedToken();
+    }
 
     // Creates scope
     const contentsPath = nodePath.resolve(project.root, "./contents/");
@@ -327,7 +348,7 @@ export async function testScope(scope: string, value: string): Promise<0 | 1> {
     const stat = await nodeFile.stat(scopePath);
     return stat.isDirectory() ? 1 : 0;
 }
-export async function createScope(scope: string, value: string): Promise<void> {
+export async function createScope(scope: string, value: string, ensure: boolean = false): Promise<void> {
     // Validates token
     if(value !== project.admin) throw new except.UnauthorizedToken();
 
@@ -345,7 +366,10 @@ export async function createScope(scope: string, value: string): Promise<void> {
     catch {
         exists = false;
     }
-    if(exists) throw new except.PathAlreadyExists();
+    if(exists) {
+        if(ensure) return;
+        throw new except.PathAlreadyExists();
+    }
     await nodeFile.mkdir(scopePath, {
         recursive: true
     });
