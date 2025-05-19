@@ -20,6 +20,30 @@ export class DebugException extends Exception {
         this.message = message;
     }
 }
+export class PathAlreadyExists extends Exception {
+    // Defines fields
+    readonly code = "PATH_ALREADY_EXISTS";
+    readonly message = "The path specified already exists.";
+    readonly status = 400;
+}
+export class PathDoesNotExist extends Exception {
+    // Defines fields
+    readonly code = "PATH_DOES_NOT_EXIST";
+    readonly message = "The path specified does not exist.";
+    readonly status = 400;
+}
+export class PathNotDirectory extends Exception {
+    // Defines fields
+    readonly code = "PATH_NOT_DIRECTORY";
+    readonly message = "The path specified is not a directory.";
+    readonly status = 400;
+}
+export class PathNotFile extends Exception {
+    // Defines fields
+    readonly code = "PATH_NOT_FILE";
+    readonly message = "The path specified is not a file.";
+    readonly status = 400;
+}
 export class UnauthorizedToken extends Exception {
     // Defines fields
     readonly code = "UNAUTHORIZED_TOKEN";
@@ -37,4 +61,10 @@ export class UnknownException extends Exception {
     readonly code = "UNKNOWN_EXCEPTION";
     readonly message = "An unknown exception has occurred.";
     readonly status = 500;
+}
+export class UnknownToken extends Exception {
+    // Defines fields
+    readonly code = "UNKNOWN_TOKEN";
+    readonly message = "The token provided is not available.";
+    readonly status = 404;
 }

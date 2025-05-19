@@ -18,7 +18,7 @@ export const routes: Route[] = [
             // Resolves index.html
             const filepath = nodePath.resolve(project.root, "./assets/html/index.html");
             const file = Bun.file(filepath);
-            if(!(await file.exists())) return null;
+            if(!(await file.exists())) throw new except.UnknownEndpoint();
             audit.logMessage("Hello, world!");
             return new Response(file);
         }
@@ -30,9 +30,9 @@ export const routes: Route[] = [
             const url = new URL(request.url);
             const dirpath = nodePath.resolve(project.root, "./assets/");
             const filepath = nodePath.resolve(dirpath, url.pathname.split("/").slice(2).join("/"));
-            if(!filepath.startsWith(dirpath)) return null;
+            if(!filepath.startsWith(dirpath)) throw new except.UnknownEndpoint();
             const file = Bun.file(filepath);
-            if(!(await file.exists())) return null;
+            if(!(await file.exists())) throw new except.UnknownEndpoint();
             return new Response(file);
         }
     },
@@ -43,9 +43,9 @@ export const routes: Route[] = [
             const url = new URL(request.url);
             const dirpath = nodePath.resolve(project.root, "./static/");
             const filepath = nodePath.resolve(dirpath, url.pathname.split("/").slice(1).join("/"));
-            if(!filepath.startsWith(dirpath)) return null;
+            if(!filepath.startsWith(dirpath)) throw new except.UnknownEndpoint();
             const file = Bun.file(filepath);
-            if(!(await file.exists())) return null;
+            if(!(await file.exists())) throw new except.UnknownEndpoint();
             return new Response(file);
         }
     }

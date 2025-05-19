@@ -7,7 +7,7 @@ import * as api from "./core/api";
 const tokens = api.listTokens(10, 0);
 console.log(tokens);
 
-const pubtoken = api.fetchToken("");
+const pubtoken = api.testToken("a");
 console.log(pubtoken);
 
 // const token = tokens[0]!;
