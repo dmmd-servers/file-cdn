@@ -12,6 +12,6 @@ console.log(pubtoken);
 
 // const token = tokens[0]!;
 // console.log(token);
-
+// api.
 // const updated = api.permitTokenAccess(token, [ "hello" ]);
 // console.log(updated);

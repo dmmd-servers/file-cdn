@@ -276,6 +276,17 @@ export async function listScopes(values: string[]): Promise<string[]> {
     const list = Array.from(cache).filter((scope) => scopes.includes(scope));
     return list;
 }
+export async function testScope(scope: string, value: string): Promise<0 | 1> {
+    // Validates token
+    if(value !== project.admin) throw new except.UnauthorizedToken();
+
+    // Creates scope
+    const contentsPath = nodePath.resolve(project.root, "./contents/");
+    const scopePath = nodePath.resolve(contentsPath, `./${scope}/`);
+    if(!scopePath.startsWith(contentsPath)) throw new except.UnknownEndpoint();
+    const stat = await nodeFile.stat(scopePath);
+    return stat.isDirectory() ? 1 : 0;
+}
 export async function createScope(scope: string, value: string): Promise<void> {
     // Validates token
     if(value !== project.admin) throw new except.UnauthorizedToken();
