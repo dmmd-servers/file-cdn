@@ -6,7 +6,7 @@
         "@types/bun": "latest"
     },
     "module": "index.ts",
-    "name": "bunsvr",
+    "name": "static-cdn",
     "peerDependencies": {
         "typescript": "^5"
     },

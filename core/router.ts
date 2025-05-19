@@ -37,29 +37,6 @@ export const routes: Route[] = [
         }
     },
     {
-        pattern: /^\/secrets\/*/,
-        resolve: async (request) => {
-            // Authorizes token
-            // I'm probably abusing this.
-            // Someone please help me fix this, kthxbai.
-            if(project.token.length !== 0) {
-                const authorization = request.headers.get("Authorization");
-                if(authorization === null) throw new except.UnauthorizedToken();
-                const match = authorization.match(/^Basic (.+)$/);
-                if(match === null || match[1] !== project.token) throw new except.UnauthorizedToken();
-            }
-
-            // Resolves secrets
-            const url = new URL(request.url);
-            const dirpath = nodePath.resolve(project.root, "./secrets/");
-            const filepath = nodePath.resolve(dirpath, url.pathname.split("/").slice(2).join("/"));
-            if(!filepath.startsWith(dirpath)) return null;
-            const file = Bun.file(filepath);
-            if(!(await file.exists())) return null;
-            return new Response(file);
-        }
-    },
-    {
         pattern: /^\/*/,
         resolve: async (request) => {
             // Resolves static

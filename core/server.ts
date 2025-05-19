@@ -52,4 +52,4 @@ export const server = Bun.serve({
     },
     port: project.port
 });
-audit.logServer(server);
+audit.logListen(server);
