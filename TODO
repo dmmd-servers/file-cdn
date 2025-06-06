@@ -1,4 +1,0 @@
-- need to remove all of the "exists" check in favor of catching for errors directly
-- web api since this IS meant to be a cdn
-- cli if im in the mood, honestly trying to set up all of the pretty print and commandline handling sounds like a lot of pain, especially since js doesn't have good libraries for this
-- stress test and refactor
