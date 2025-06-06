@@ -3,7 +3,6 @@ import nodeFile from "node:fs/promises";
 import nodePath from "node:path";
 import * as project from "../core/project";
 import AbortFault from "../faults/abort-fault";
-import NoEndpointFault from "../faults/no-endpoint-fault";
 
 // Defines assets route function
 export async function assetsRoute(request: Request, server: Bun.Server): Promise<Response> {
@@ -17,13 +16,13 @@ export async function assetsRoute(request: Request, server: Bun.Server): Promise
         // Resolves asset
         const filepath = nodePath.resolve(project.rootPath, "./assets/", target[1]!);
         const stat = await nodeFile.stat(filepath);
-        if(!stat.isFile()) throw new NoEndpointFault();
+        if(!stat.isFile()) throw new AbortFault();
         const file = Bun.file(filepath);
         return new Response(file);
     }
     catch {
         // Throws fault
-        throw new NoEndpointFault();
+        throw new AbortFault();
     }
 }
 

@@ -4,17 +4,17 @@ import nodePath from "node:path";
 import * as project from "../core/project";
 import AbortFault from "../faults/abort-fault";
 
-// Defines static route function
-export async function staticRoute(request: Request, server: Bun.Server): Promise<Response> {
+// Defines file route function
+export async function fileRoute(request: Request, server: Bun.Server): Promise<Response> {
     // Parses url
     const url = new URL(request.url);
-    const target = url.pathname.match(/^\/(.+)$/);
+    const target = url.pathname.match(/^\/(?:file|f)\/(.+)$/);
     if(target === null) throw new AbortFault();
 
-    // Parses asset
+    // Parses file
     try {
-        // Resolves asset
-        const filepath = nodePath.resolve(project.rootPath, "./static/", target[1]!);
+        // Resolves file
+        const filepath = nodePath.resolve(project.rootPath, "./files/", target[1]!);
         const stat = await nodeFile.stat(filepath);
         if(!stat.isFile()) throw new AbortFault();
         const file = Bun.file(filepath);
@@ -27,4 +27,4 @@ export async function staticRoute(request: Request, server: Bun.Server): Promise
 }
 
 // Exports
-export default staticRoute;
+export default fileRoute;
