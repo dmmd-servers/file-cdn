@@ -5,13 +5,11 @@ import AbortFault from "../faults/abort-fault";
 import GenericFault from "../faults/generic-fault";
 import NoEndpointFault from "../faults/no-endpoint-fault";
 import ServerFault from "../faults/server-fault";
-import assetsRoute from "./assets-route";
 import fileRoute from "./file-route";
 import staticRoute from "./static-route";
 
 // Defines routes
 const routes = [
-    assetsRoute,
     staticRoute,
     fileRoute
 ];

@@ -11,9 +11,9 @@ export async function staticRoute(request: Request, server: Bun.Server): Promise
     const target = url.pathname.match(/^\/(.+)$/);
     if(target === null) throw new AbortFault();
 
-    // Parses asset
+    // Parses static
     try {
-        // Resolves asset
+        // Resolves static
         const filepath = nodePath.resolve(project.rootPath, "./static/", target[1]!);
         const stat = await nodeFile.stat(filepath);
         if(!stat.isFile()) throw new AbortFault();
