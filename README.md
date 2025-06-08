@@ -1,15 +1,17 @@
-# DmmD-Web / Bunsvr
+# Static CDN
 
 ## Synopsis
 
-A small template repository for all of my Bun web servers.
+A small CDN server to serve some static files for my other servers.
+
+Not really for public use but feel free to use it in your own project.
 
 ## Installation
 
 ```
 # Clone the repository
-git clone https://github.com/dmmd-web/bunsvr proj-name
-cd proj-name
+git clone https://github.com/dmmd-servers/static-cdn
+cd static-cdn
 
 # Install packages
 bun i
@@ -25,10 +27,6 @@ bun .
 PORT=3000
 ```
 
-## Contribution
-
-Active contributions are welcome. Don't expect anything glorious from this repository though.
-
 ---
 
-###### Last Updated: June 6th, 2025, 12:15 AM EST.
+###### Last Updated: June 7th, 2025, 8:05 PM EST.
