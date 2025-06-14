@@ -1,20 +1,12 @@
 // Imports
 import chalk from "chalk";
 import audit from "./audit";
-<<<<<<< HEAD
-import indexRoute from "../routes/index-route";
-=======
 import project from "./project";
->>>>>>> d7396d9a2ed6de84c854bfe6d59cefc95becfc72
 
 // Defines access function
 export async function access(request: Request, server: Bun.Server): Promise<Response> {
     // Creates response
-<<<<<<< HEAD
-    const response = await indexRoute(request, server);
-=======
     const response = await project.router(request, server);
->>>>>>> d7396d9a2ed6de84c854bfe6d59cefc95becfc72
     
     // Audits access
     const url = new URL(request.url);

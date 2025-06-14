@@ -1,7 +1,4 @@
 // Imports
-<<<<<<< HEAD
-import "./core/server";
-=======
 import chalk from "chalk";
 import access from "./core/access";
 import audit from "./core/audit";
@@ -22,4 +19,3 @@ const server = Bun.serve({
 const url = `http://localhost:${project.port}/`;
 const body = `Server is now listening on ${chalk.cyan(url)}.`;
 audit("server", body, chalk.green);
->>>>>>> d7396d9a2ed6de84c854bfe6d59cefc95becfc72
