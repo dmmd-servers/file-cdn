@@ -1,27 +1,27 @@
 // Defines elements
 const elementDirpath = document.getElementById("dirpath");
-const elementItems = document.getElementById("items");
+const elementList = document.getElementById("list");
 if(elementDirpath === null) throw new Error("Element (#dirpath) not found!");
-if(elementItems === null) throw new Error("Element (#items) not found!");
+if(elementList === null) throw new Error("Element (#list) not found!");
 
 // Defines dirname
 const parameters = new URLSearchParams(location.search);
 const query = parameters.get("q") ?? "/";
-const dirname = new URL(query, location.origin).pathname;
+const dirpath = new URL(query, location.origin).pathname;
 
 // Fetches items
-const result = await fetch("/d" + dirname);
-const items = result.ok ? await result.json() : [];
-if(query !== "/") items.unshift("../");
+const result = await fetch(`/d${dirpath}`);
+const filenames = result.ok ? await result.json() : [];
+if(query !== "/") filenames.unshift("../");
 
 // Updates elements
-elementDirpath.innerText = dirname;
-if(!result.ok) elementItems.innerText = "Something went wrong...";
-else for(let i = 0; i < items.length; i++) {
+elementDirpath.innerText = dirpath;
+if(!result.ok) elementList.innerText = "Something went wrong...";
+else for(let i = 0; i < filenames.length; i++) {
     const elementItem = document.createElement("a");
-    const item = items[i];
-    const resolved = new URL(dirname + item, location.origin).pathname;
-    elementItem.href = item.endsWith("/") ? `/?q=${resolved}` : `/f${resolved}`;
-    elementItem.innerText = item;
-    elementItems.appendChild(elementItem);
+    const filename = filenames[i];
+    const filepath = new URL(dirpath + filename, location.origin).pathname;
+    elementItem.href = filename.endsWith("/") ? `/?q=${filepath}` : `/f${filepath}`;
+    elementItem.innerText = filename;
+    elementList.appendChild(elementItem);
 }

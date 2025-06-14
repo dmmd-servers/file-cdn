@@ -14,10 +14,10 @@ export async function route(request: Request, server: Bun.Server): Promise<Respo
     // Resolves directory
     try {
         const dirpath = nodePath.resolve(direct.files, target[1]!);
-        const filepaths = await nodeFile.readdir(dirpath);
-        const items = await Promise.all(filepaths.map(async (filepath) => {
-            const stat = await nodeFile.stat(nodePath.resolve(dirpath, filepath));
-            return stat.isDirectory() ? filepath + "/" : filepath;
+        const filenames = await nodeFile.readdir(dirpath);
+        const items = await Promise.all(filenames.map(async (filename) => {
+            const stat = await nodeFile.stat(nodePath.resolve(dirpath, filename));
+            return stat.isDirectory() ? filename + "/" : filename;
         }));
         items.sort((left, right) => (+right.endsWith("/") - +left.endsWith("/")) || left.localeCompare(right));
         return Response.json(items);
