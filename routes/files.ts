@@ -1,14 +1,13 @@
 // Imports
-import nodeFile from "node:fs/promises";
 import nodePath from "node:path";
 import direct from "../core/direct";
 import faults from "../core/faults";
 
-// Defines file route function
-export async function fileRoute(request: Request, server: Bun.Server): Promise<Response> {
+// Defines route
+export async function route(request: Request, server: Bun.Server): Promise<Response> {
     // Parses url
     const url = new URL(request.url);
-    const target = url.pathname.match(/^\/(?:file|f)\/(.+)$/);
+    const target = url.pathname.match(/^\/(?:file|f)\/(.*)$/);
     if(target === null) throw new faults.RouteAbort();
 
     // Resolves file
@@ -19,4 +18,4 @@ export async function fileRoute(request: Request, server: Bun.Server): Promise<R
 }
 
 // Exports
-export default fileRoute;
+export default route;
