@@ -5,9 +5,8 @@ import faults from "../core/faults";
 
 // Defines subroutes
 const subroutes = [
-    await import("./assets"),
-    await import("./static"),
-    await import("./home")
+    await import("./files"),
+    await import("./static")
 ].map((imported) => imported.default);
 
 // Defines route

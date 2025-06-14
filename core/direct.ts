@@ -5,14 +5,14 @@ import nodePath from "node:path";
 export const root = nodePath.resolve(import.meta.dir, "../");
 
 // Defines relative paths
-export const assets = nodePath.resolve(root, "./assets/");
+export const files = nodePath.resolve(root, "./files/");
 export const contents = nodePath.resolve(root, "./static/");
 export const routes = nodePath.resolve(root, "./routes/");
 
 // Exports
 export default {
-    assets,
     contents,
+    files,
     root,
     routes
 };

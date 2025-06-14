@@ -1,21 +1,22 @@
 // Imports
+import nodeFile from "node:fs/promises";
 import nodePath from "node:path";
 import direct from "../core/direct";
 import faults from "../core/faults";
 
-// Defines route
-export async function route(request: Request, server: Bun.Server): Promise<Response> {
+// Defines file route function
+export async function fileRoute(request: Request, server: Bun.Server): Promise<Response> {
     // Parses url
     const url = new URL(request.url);
-    const target = url.pathname.match(/^\/assets\/(.+)$/);
+    const target = url.pathname.match(/^\/(?:file|f)\/(.+)$/);
     if(target === null) throw new faults.RouteAbort();
 
-    // Resolves asset
-    const filepath = nodePath.resolve(direct.assets, target[1]!);
+    // Resolves file
+    const filepath = nodePath.resolve(direct.files, target[1]!);
     const file = Bun.file(filepath);
     if(!(await file.exists())) throw new faults.MissingEndpoint();
     return new Response(file);
 }
 
 // Exports
-export default route;
+export default fileRoute;
