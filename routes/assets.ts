@@ -7,11 +7,11 @@ import faults from "../core/faults";
 export async function route(request: Request, server: Bun.Server): Promise<Response> {
     // Parses url
     const url = new URL(request.url);
-    const target = url.pathname.match(/^\/(?:file|fil|f)\/(.*)$/);
+    const target = url.pathname.match(/^\/assets\/(.*)$/);
     if(target === null) throw new faults.RouteAbort();
-
-    // Resolves file
-    const filepath = nodePath.resolve(direct.files, target[1]!);
+    
+    // Resolves static
+    const filepath = nodePath.resolve(direct.assets, target[1]!);
     const file = Bun.file(filepath);
     if(!(await file.exists())) throw new faults.MissingEndpoint();
     return new Response(file);

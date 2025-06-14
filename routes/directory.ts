@@ -8,17 +8,20 @@ import faults from "../core/faults";
 export async function route(request: Request, server: Bun.Server): Promise<Response> {
     // Parses url
     const url = new URL(request.url);
-    const target = url.pathname.match(/^\/(?:directory|d)\/(.*)$/);
+    const target = url.pathname.match(/^\/(?:directory|dir|d)\/(.*)$/);
     if(target === null) throw new faults.RouteAbort();
-
+    
     // Resolves directory
     try {
         const dirpath = nodePath.resolve(direct.files, target[1]!);
-        const files = await nodeFile.readdir(dirpath);
-        return Response.json(files);
-        // const file = Bun.file(filepath);
-        // if(!(await file.exists())) throw new faults.MissingEndpoint();
-        // return new Response(file);
+        const children = await nodeFile.readdir(dirpath);
+        const items = await Promise.all(children.map(async (child) => {
+            const stat = await nodeFile.stat(nodePath.resolve(dirpath, child));
+            return stat.isFile() ? child : (child + "/");
+        }));
+        if(dirpath !== direct.files) items.push("../");
+        items.sort((left, right) => (+right.endsWith("/") - +left.endsWith("/")) || left.localeCompare(right));
+        return Response.json(items);
     }
     catch {
         throw new faults.MissingEndpoint();
