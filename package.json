@@ -1,5 +1,9 @@
 {
     "dependencies": {
+<<<<<<< HEAD
+=======
+        "@types/web": "^0.0.239",
+>>>>>>> d7396d9a2ed6de84c854bfe6d59cefc95becfc72
         "chalk": "^5.4.1"
     },
     "devDependencies": {
