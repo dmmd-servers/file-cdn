@@ -7,7 +7,7 @@
         "@types/web": "^0.0.241"
     },
     "module": "index.ts",
-    "name": "bunsvr",
+    "name": "static-cdn",
     "peerDependencies": {
         "typescript": "^5.8.3"
     },
