@@ -14,6 +14,7 @@ export async function route(request: Request, server: Bun.Server): Promise<Respo
     // Resolves directory
     try {
         const dirpath = nodePath.resolve(direct.files, target[1]!);
+        if(!dirpath.startsWith(direct.files)) throw new faults.MissingEndpoint();
         const filenames = await nodeFile.readdir(dirpath);
         const items = await Promise.all(filenames.map(async (filename) => {
             const stat = await nodeFile.stat(nodePath.resolve(dirpath, filename));

@@ -12,6 +12,7 @@ export async function route(request: Request, server: Bun.Server): Promise<Respo
 
     // Resolves file
     const filepath = nodePath.resolve(direct.files, target[1]!);
+    if(!filepath.startsWith(direct.files)) throw new faults.MissingEndpoint();
     const file = Bun.file(filepath);
     if(!(await file.exists())) throw new faults.MissingEndpoint();
     return new Response(file);
