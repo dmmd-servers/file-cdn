@@ -4,16 +4,10 @@ import pack from "./bunsvr/pack";
 import inspect from "./library/inspect";
 import project from "./library/project";
 import router from "./library/router";
+import start from "./library/start";
 
-// Ensures files directory
-try {
-    audit("files", "Ensuring files directory...", chalk.yellow);
-    await nodeFile.mkdir(direct.files);
-    audit("files", "Files directory automatically created!", chalk.yellow);
-}
-catch {
-    audit("files", "Files directory detected!", chalk.green);
-}
+// Initializes CDN
+await start.ensureCDN();
 
 // Creates server
 const server = listen(

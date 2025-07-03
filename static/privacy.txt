@@ -1,0 +1,50 @@
+-=- Privacy Policy -=-
+
+# Briefings
+
+I don't really wanna touch legal stuff, so this is a quick and simple privacy policy for this service.
+
+# Data Collection and Purpose
+
++--------------------+--------------------------------------------------+
+| Data               | Purpose                                          |
++--------------------+--------------------------------------------------+
+| Your IP Address    | For debugging primarily. However, since it is    |
+|                    | supposed to serve static files relevant to me,   |
+|                    | I also use it as a security feature to inform me |
+|                    | where and how my content is being used.          |
++--------------------+--------------------------------------------------+
+
+* Note: You can opt out by enabling the "DNT" or "Sec-GPC" header on your requests.
+
+# Data Retention
+
+I don't plan on holding your data in any permanent storages, mostly because:
+a. That's too much work for me.
+b. I have no reason to keep them.
+
+Your data will only exist in audit logs on my terminal for a brief amount of time and will promptly disappear upon server shutdown.
+
+# Requesting Data Deletion
+
+I can't really do much about it since I literally do not store your data in any permanent way, shape, or form. If you are concerned about your data being audit logged onto my terminal, please just shoot me a message on Discord or email. I can just clear the audit log specifically for you! .w.
+
+# GDPR Compliance
+
+I will try my best? Let me know if you are concerned about anything.
+
+# Terms of Service
+
+You can read more about it on the /terms.txt page.
+
+# Updates on Privacy Policy
+
+There's no way for me to alert you. I don't keep track of subscribers or any contact info whatsoever. There should be a lil' date at the end of this file if you wanna keep track when I update this file though.
+
+# Contacts
+
+Discord: therock2t
+Email: dm12332131mdgaming@gmail.com
+
+# Last Updated
+July 3rd, 2025, 1:41 PM EST.

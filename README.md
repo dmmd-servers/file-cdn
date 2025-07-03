@@ -1,4 +1,4 @@
-# Static CDN
+# File CDN
 
 ## Synopsis
 
@@ -10,8 +10,8 @@ Not really for public use but feel free to use it in your own project.
 
 ```
 # Clone the repository
-git clone https://github.com/dmmd-servers/static-cdn
-cd static-cdn
+git clone https://github.com/dmmd-servers/file-cdn
+cd file-cdn
 
 # Install necessary packages
 bun i
@@ -19,4 +19,4 @@ bun i
 
 ---
 
-###### Last Updated: June 7th, 2025, 8:05 PM EST.
+###### Last Updated: July 3rd, 2025, 1:13 AM EST.
