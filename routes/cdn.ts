@@ -39,7 +39,7 @@ export async function route(server: Bun.Server, request: Request, url: URL): Pro
     // Defines view api
     if(url.pathname.startsWith("/v")) {
         // Grabs viewer
-        const viewer = await grab.resolveFile("index.html", paths.contents);
+        const viewer = await grab.resolveFile("viewer.html", paths.contents);
         if(viewer === null) throw new faults.ServerFailure();
         return pack.resolveFile(viewer);
     }

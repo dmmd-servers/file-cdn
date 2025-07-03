@@ -1,0 +1,191 @@
+<!-- HTML -->
+<!DOCTYPE html>
+<html lang="en">
+    <!-- Head -->
+    <head>
+        <!-- Metas -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Stylesheet -->
+        <style>
+            /* Resets */
+            html, body {
+                margin: 0px;
+                padding: 0px;
+                width: 100%;
+            }
+
+            body {
+                background-color: #1f1f1f;
+            }
+
+            * {
+                color: #efefef;
+                font-family: Arial, Helvetica, sans-serif;
+                text-decoration: none;
+            }
+
+            /* Title */
+            h1 {
+                background-color: #2f2f2f;
+                border-radius: 5px;
+                font-size: 20px;
+                margin: 50px clamp(50px, 10%, 10%);
+                overflow: hidden;
+                padding: 10px 25px;
+                text-align: center;
+                white-space: nowrap;
+            }
+
+            /* Parent */
+            h2 {
+                align-items: center;
+                background-color: #2f2f2f;
+                border-radius: 5px;
+                display: flex;
+                font-size: 15px;
+                gap: 0px 10px;
+                justify-content: space-between;
+                margin: 10px clamp(50px, 10%, 10%);
+                overflow: hidden;
+                padding: 10px 25px;
+                white-space: nowrap;
+            }
+
+            h2 span {
+                color: #8f8f8f;
+                font-weight: normal;
+                white-space: nowrap;
+            }
+
+            /* Contents */
+            main {
+                background-color: #2f2f2f;
+                border-radius: 5px;
+                display: flex;
+                flex-direction: column;
+                margin: 10px clamp(50px, 10%, 10%);
+                overflow: hidden; 
+            }
+
+            main a {
+                align-items: center;
+                display: flex;
+                font-size: 15px;
+                gap: 0px 10px;
+                justify-content: space-between;
+                padding: 10px 25px;
+            }
+
+            main a:hover {
+                background-color: #4f4f6f;
+            }
+
+            main span {
+                color: #8f8f8f;
+                white-space: nowrap;
+            }
+
+            /* Footer */
+            footer {
+                margin: 50px clamp(50px, 10%, 10%);
+                display: flex;
+                gap: 10px 50px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        </style>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+        <!-- Title -->
+        <title>File CDN</title>
+    </head>
+
+    <!-- Body -->
+    <body>
+        <!-- Title -->
+        <h1>File CDN</h1>
+
+        <!-- Parent -->
+        <h2></h2>
+
+        <!-- Contents -->
+        <main></main>
+
+        <!-- Footer -->
+        <footer>
+            <a href="/robots.txt">Robots</a>
+            <a href="/terms.txt">Terms of Service</a>
+            <a href="/privacy.txt">Privacy Policy</a>
+        </footer>
+
+        <!-- Script -->
+        <script type="module">
+            // Fetches contents
+            const dirpath = location.pathname.slice(2);
+            const parent = dirpath.endsWith("/") ? dirpath : (dirpath + "/");
+            const results = await fetch("/d" + parent);
+            const contents = results.ok ? await results.json() : [];
+            
+            // Populates elements
+            const h2 = document.getElementsByTagName("h2").item(0);
+            if(h2 === null) throw new Error("Could not find h2");
+            const folders = contents.filter((content) => content.endsWith("/")).length;
+            const files = contents.length - folders;
+            h2.innerHTML = `
+                ${parent}
+                <span>${folders} Folder(s), ${files} File(s)</span>
+            `;
+            const main = document.getElementsByTagName("main").item(0);
+            if(main === null) throw new Error("Could not find main");
+            const list = await Promise.all(contents.map(async (content) => {
+                if(content.endsWith("/")) {
+                    const view = "/v" + parent + content;
+                    const item = `
+                        <a href=${view}>
+                            ${content}
+                        </a>
+                    `;
+                    return item;
+                }
+                else {
+                    const url = "/f" + parent + content;
+                    const stat = await fetch(url, { method: "HEAD" });
+                    const length = stat.headers.get("content-length");
+                    const bytes = length === null ? "N/A" : toBytes(+length);
+                    const item = `
+                        <a href=${url}>
+                            ${content}
+                            <span>${bytes}</span>
+                        </a>
+                    `;
+                    return item;
+                }
+            }));
+            main.innerHTML = main.innerHTML + list.join("");
+
+            // Appends parent
+            if(parent !== "/") {
+                const view = "/v" + parent.split("/").slice(0, -2).join("/") + "/";
+                const item = `
+                    <a href=${view}>
+                        ../
+                    </a>
+                `;
+                main.innerHTML = item + main.innerHTML;
+            }
+
+            // Defines formatters
+            function toBytes(length) {
+                const units = [ "B", "KiB", "MiB", "GiB", "TiB" ];
+                const scale = Math.min(Math.floor(Math.log(length) / Math.log(1024)), units.length - 1);
+                const size = length / Math.pow(1024, scale);
+                const unit = units[scale];
+                return `${size} ${unit}`;
+            }
+        </script>
+    </body>
+</html>
