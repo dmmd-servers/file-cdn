@@ -1,10 +1,9 @@
 // Imports
-import nodeFile from "node:fs/promises";
-import chalk from "chalk";
-import access from "./core/access";
-import audit from "./core/audit";
-import direct from "./core/direct";
-import project from "./core/project";
+import listen from "./bunsvr/listen";
+import pack from "./bunsvr/pack";
+import inspect from "./library/inspect";
+import project from "./library/project";
+import router from "./library/router";
 
 // Ensures files directory
 try {
@@ -17,17 +16,30 @@ catch {
 }
 
 // Creates server
-const server = Bun.serve({
-    development: false,
-    fetch: async (request) => {
-        // Creates response
-        const response = await access(request, server);
+const server = listen(
+    // Port
+    project.port,
+
+    // Pre-processor
+    async (server, request) => {
+        const ping = inspect.inspectPing(server, request);
+        return ping;
+    },
+
+    // Router
+    router,
+
+    // Error handler
+    async (server, request, thrown) => {
+        const fault = inspect.inspectFault(server, request, thrown);
+        const response = pack.resolveFault(fault);
         return response;
     },
-    port: project.port
-});
 
-// Audits server
-const url = `http://localhost:${project.port}/`;
-const body = `Server is now listening on ${chalk.cyan(url)}.`;
-audit("server", body, chalk.green);
+    // Post-processor
+    async (server, request, response) => {
+        const access = inspect.inspectAccess(server, request, response);
+        return access;
+    }
+);
+inspect.inspectServer(server);

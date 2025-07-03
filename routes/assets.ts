@@ -1,21 +1,19 @@
 // Imports
-import nodePath from "node:path";
-import direct from "../core/direct";
-import faults from "../core/faults";
+import grab from "../bunsvr/grab";
+import pack from "../bunsvr/pack";
+import faults from "../library/faults";
+import paths from "../library/paths";
 
 // Defines route
-export async function route(request: Request, server: Bun.Server): Promise<Response> {
-    // Parses url
-    const url = new URL(request.url);
-    const target = url.pathname.match(/^\/assets\/(.*)$/);
-    if(target === null) throw new faults.RouteAbort();
-    
-    // Resolves static
-    const filepath = nodePath.resolve(direct.assets, target[1]!);
-    if(!filepath.startsWith(direct.assets)) throw new faults.MissingEndpoint();
-    const file = Bun.file(filepath);
-    if(!(await file.exists())) throw new faults.MissingEndpoint();
-    return new Response(file);
+export async function route(server: Bun.Server, request: Request, url: URL): Promise<Response> {
+    // Checks pathname
+    const pattern = url.pathname.match(/^\/assets\/(.*)$/);
+    if(pattern === null) throw new faults.RouteAbort();
+
+    // Returns asset
+    const file = await grab.resolveFile(pattern[1]!, paths.assets);
+    if(file === null) throw new faults.MissingAsset();
+    return pack.resolveFile(file);
 }
 
 // Exports

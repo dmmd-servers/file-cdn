@@ -13,18 +13,8 @@ Not really for public use but feel free to use it in your own project.
 git clone https://github.com/dmmd-servers/static-cdn
 cd static-cdn
 
-# Install packages
+# Install necessary packages
 bun i
-
-# Starts server
-bun .
-```
-
-## Configuration
-
-```.env
-# Server port
-PORT=3000
 ```
 
 ---
