@@ -50,9 +50,10 @@ export function resolveOK(): Response {
 export function resolveRedirect(location: string): Response {
     // Packs redirect
     const options = {
-        header: {
+        headers: {
             "location": location
         },
+        redirected: true,
         status: 301
     };
     const response = new Response(null, options);

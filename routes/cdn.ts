@@ -39,18 +39,19 @@ export async function route(server: Bun.Server, request: Request, url: URL): Pro
     // Defines view api
     if(url.pathname.startsWith("/v")) {
         // Grabs viewer
-        const viewer = await grab.resolveFile("viewer.html", paths.contents);
+        const viewer = await grab.resolveFile("viewer.html", paths.resources);
         if(viewer === null) throw new faults.ServerFailure();
         return pack.resolveFile(viewer);
     }
 
     // Handles redirect
-    if(url.pathname === "/") return new Response(null, {
-        status: 301,
-        headers: {
-            "location": "/v"
-        }
-    });
+    if(url.pathname === "/") return pack.resolveRedirect("/v");
+    // new Response(null, {
+    //     status: 301,
+    //     headers: {
+    //         "location": "/v"
+    //     }
+    // });
 
     // Handles fallback
     throw new faults.RouteAbort();
