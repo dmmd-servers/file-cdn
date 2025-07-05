@@ -47,6 +47,17 @@ export function resolveOK(): Response {
     const response = new Response("OK");
     return response;
 }
+export function resolveRedirect(location: string): Response {
+    // Packs redirect
+    const options = {
+        header: {
+            "location": location
+        },
+        status: 301
+    };
+    const response = new Response(null, options);
+    return response;
+}
 
 // Exports
 export default {
@@ -55,4 +66,5 @@ export default {
     resolveFile,
     resolveJSON,
     resolveOK,
+    resolveRedirect
 };

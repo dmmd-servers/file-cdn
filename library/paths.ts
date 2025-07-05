@@ -1,12 +1,12 @@
 // Imports
 import nodePath from "node:path";
-import project from "./project";
+import system from "../bunsvr/system";
 
 // Defines paths
-export const assets = nodePath.resolve(project.basepath, "./assets/");
-export const cdn = nodePath.resolve(project.basepath, "./cdn");
-export const contents = nodePath.resolve(project.basepath, "./static/");
-export const root = project.basepath;
+export const assets = nodePath.resolve(system.basepath, "./assets/");
+export const cdn = nodePath.resolve(system.basepath, "./cdn");
+export const contents = nodePath.resolve(system.basepath, "./static/");
+export const root = system.basepath;
 
 // Exports
 export default {

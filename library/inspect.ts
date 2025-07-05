@@ -17,11 +17,14 @@ export function inspectAccess(
     const url: URL = known ? new URL(request.url) : null;
     const ip = known ? (track.resolveIP(server, request) ?? "::-1") : "::-1";
     const endpoint = known ? `${request.method} ${url.pathname + url.search}` : "NULL ?";
-    const status = `${response.status} ${response.ok ? "OK" : "FAILED"}`;
+    const status = response.ok ? "OK" :
+        response.redirected ? "REDIRECTED" : "FAILED";
+    const style = response.ok ? chalk.green :
+        response.redirected ? chalk.yellow : chalk.red;
     audit(
         "access",
-        `${chalk.cyan(ip)} accessed ${chalk.cyan(endpoint)}. (${status})`,
-        response.ok ? chalk.green : chalk.red,
+        `${chalk.cyan(ip)} accessed ${chalk.cyan(endpoint)}. (${response.status} ${status})`,
+        style,
         project.log
     );
     return response;

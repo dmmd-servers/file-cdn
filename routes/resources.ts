@@ -10,8 +10,8 @@ export async function route(server: Bun.Server, request: Request, url: URL): Pro
     const pattern = url.pathname.match(/^\/(.*)$/);
     if(pattern === null) throw new faults.RouteAbort();
 
-    // Returns static
-    const file = await grab.resolveFile(pattern[1]!, paths.contents);
+    // Returns resource
+    const file = await grab.resolveFile(pattern[1]!, paths.resources);
     if(file === null) throw new faults.RouteAbort();
     return pack.resolveFile(file);
 }
