@@ -46,12 +46,6 @@ export async function route(server: Bun.Server, request: Request, url: URL): Pro
 
     // Handles redirect
     if(url.pathname === "/") return pack.resolveRedirect("/v");
-    // new Response(null, {
-    //     status: 301,
-    //     headers: {
-    //         "location": "/v"
-    //     }
-    // });
 
     // Handles fallback
     throw new faults.RouteAbort();
